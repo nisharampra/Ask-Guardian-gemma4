@@ -2473,27 +2473,23 @@ def render_chat():
 
 def render_message_checker():
     st.subheader("Message Legitimacy Check")
-    st.caption("Paste an SMS, email, WhatsApp, Telegram, or Gmail message. You can also upload a screenshot for OCR.")
+    st.caption("Paste an SMS, email, WhatsApp, Telegram, or Gmail message.")
 
     message = st.text_area(
         "Message text",
         height=180,
         placeholder="Paste the full message here, including sender name, links, phone numbers, and payment instructions.",
     )
-    screenshot = st.file_uploader(
-        "Upload message screenshot for OCR",
-        type=["png", "jpg", "jpeg", "webp"],
-        key="message_ocr_upload",
-    )
 
     if st.button("Check message", type="primary"):
-        combined, ocr_text = combine_safety_inputs(message, "", screenshot)
+        if not message.strip():
+            st.warning("Paste the message text first.")
+            return
+
+        combined, _ = combine_safety_inputs(message, "", None)
         assessment = assess_safety(combined, mode="message")
         answer = explain_safety_with_gemma(combined, assessment, mode="message")
         st.markdown(answer)
-        if ocr_text:
-            with st.expander("OCR extracted text"):
-                st.text(ocr_text)
 
         st.warning("Do not share OTP, identity, card, or banking details. Verify through the official app or a website you type manually.")
 
