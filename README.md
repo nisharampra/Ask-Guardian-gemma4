@@ -8,7 +8,7 @@ A Gemma-powered assistant that helps users understand bank statements, detect su
 
 ## 🎥 Demo Video
 
-YouTube Demo: https://your-youtube-link-here
+YouTube Demo: [https://your-youtube-link-here](https://www.youtube.com/watch?v=88TUoKy7Yfo)
 
 ---
 
