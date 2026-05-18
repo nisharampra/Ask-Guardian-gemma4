@@ -1,267 +1,391 @@
-# Ask Guardian
+# Ask Guardian 🛡️
 
-Ask Guardian is a Streamlit demo app that reads bank statements, normalizes transactions, and gives clear financial insights from the uploaded data.
+## Local AI Financial Safety Assistant
 
-It supports CSV, XLS, and XLSX files, including multiple monthly statements uploaded together.
+A Gemma-powered assistant that helps users understand bank statements, detect suspicious finance messages, and make safer financial decisions locally.
 
-## Features
+---
 
-- Multi-file bank statement upload
-- CSV/XLS/XLSX parsing with robust date and amount handling
-- Automatic transaction normalization
-- Category detection for food, transport, groceries, shopping, bills, rent, subscriptions, income, transfers, healthcare, and travel
-- Multi-month dashboard with month filter
-- Guardian Intelligence Report
-- Financial health score out of 100
-- Unusual spending detection
-- Behavioral spending insights
-- Month-aware chatbot
-- Transaction table with row selection
-- Explain-this-transaction panel
-- Message scam checker
-- Finance service risk checker
-- Optional Gemma/Ollama or Hugging Face model support
+## 🎥 Demo Video
 
-## Quick Start
+YouTube Demo: https://your-youtube-link-here
+
+---
+
+# Overview
+
+Ask Guardian is a local-first AI financial safety assistant designed to help users:
+
+* Understand bank statements
+* Track spending behavior
+* Detect unusual transactions
+* Identify scam-like finance messages
+* Analyze suspicious financial offers
+
+The system combines:
+
+* Financial transaction analysis
+* Retrieval-grounded AI responses
+* Scam detection logic
+* Local Gemma reasoning through Ollama
+
+The assistant only answers using uploaded statement evidence, making responses explainable and grounded.
+
+---
+
+# Features
+
+## 📊 Bank Statement Dashboard
+
+Upload CSV, XLS, or XLSX bank statements and automatically:
+
+* Detect transaction columns
+* Normalize different statement formats
+* Categorize spending
+* Generate financial dashboards
+* Analyze recurring expenses
+* Detect unusual spending patterns
+
+Supported categories include:
+
+* Food
+* Transport
+* Groceries
+* Shopping
+* Bills
+* Rent
+* Subscriptions
+* Healthcare
+* Travel
+* Transfers
+* Income
+
+---
+
+## 💬 Ask Guardian Chat
+
+Users can ask questions such as:
+
+* “Where did I spend the most?”
+* “How much did I spend in April?”
+* “What are my recurring subscriptions?”
+* “Which transactions look unusual?”
+* “How can I save more money?”
+
+The assistant retrieves relevant statement rows before generating responses.
+
+---
+
+## 🚨 Message Legitimacy Check
+
+Ask Guardian can analyze:
+
+* SMS messages
+* WhatsApp messages
+* Emails
+* Telegram messages
+* Investment offers
+* Suspicious financial promotions
+
+The system checks for warning signs such as:
+
+* OTP requests
+* Password or CVV requests
+* Fake urgency
+* Suspicious links
+* Guaranteed returns
+* Crypto payment requests
+* Scam-like language
+
+---
+
+## 🏦 Finance Service Risk Checker
+
+Users can paste:
+
+* Finance service descriptions
+* Investment advertisements
+* Loan offers
+* Website URLs
+
+The assistant checks for:
+
+* Unrealistic investment claims
+* Fake financial language
+* Suspicious payment requests
+* Scam-related wording
+* Risk indicators
+
+---
+
+# How It Works
+
+## Statement Processing
+
+The app:
+
+1. Reads uploaded statements
+2. Detects important columns automatically
+3. Cleans malformed values
+4. Parses dates and amounts
+5. Categorizes transactions
+6. Stores searchable transaction memory in ChromaDB
+
+---
+
+## Retrieval-Grounded Responses
+
+Each transaction becomes a searchable document containing:
+
+* Date
+* Merchant
+* Description
+* Category
+* Amount
+* Month
+* Transaction type
+
+Relevant rows are retrieved before asking Gemma to answer.
+
+This keeps explanations grounded in uploaded evidence.
+
+---
+
+# Gemma Integration
+
+Ask Guardian uses Gemma locally through Ollama.
+
+Gemma is responsible for:
+
+* Explaining spending behavior
+* Summarizing statement trends
+* Interpreting scam signals
+* Generating grounded financial explanations
+
+If Gemma becomes unavailable, the system falls back to deterministic rule-based responses to maintain reliability.
+
+---
+
+# Tech Stack
+
+| Component           | Technology             |
+| ------------------- | ---------------------- |
+| Frontend            | Streamlit              |
+| Data Processing     | Pandas                 |
+| Vector Database     | ChromaDB               |
+| Embeddings          | SentenceTransformers   |
+| Fallback Embeddings | Custom Hash Embeddings |
+| Charts              | Plotly                 |
+| LLM                 | Gemma via Ollama       |
+| Image Handling      | Pillow                 |
+
+---
+
+# Project Architecture
+
+```text
+User Uploads Statement
+        ↓
+Statement Cleaning & Normalization
+        ↓
+Transaction Categorization
+        ↓
+ChromaDB Indexing
+        ↓
+Relevant Transaction Retrieval
+        ↓
+Gemma Prompting
+        ↓
+Grounded Financial Answer
+```
+
+---
+
+# Installation
+
+## 1. Clone the Repository
+
+```bash
+git clone https://github.com/yourusername/ask-guardian.git
+cd ask-guardian
+```
+
+---
+
+## 2. Create Virtual Environment
 
 ```bash
 python -m venv venv
 source venv/bin/activate
+```
+
+---
+
+## 3. Install Dependencies
+
+```bash
 pip install -r requirements.txt
+```
+
+---
+
+## 4. Install Ollama
+
+Download Ollama:
+
+https://ollama.com
+
+---
+
+## 5. Pull Gemma Model
+
+```bash
+ollama pull gemma3:4b
+```
+
+---
+
+## 6. Run the App
+
+```bash
 streamlit run app.py
 ```
 
-Then open:
+---
 
-```text
-http://localhost:8501
-```
+# Environment Variables
 
-## Uploading Statements
-
-In the sidebar, upload one or more bank statements:
-
-- `.csv`
-- `.xls`
-- `.xlsx`
-
-You can upload several monthly statements together. Ask Guardian combines them into one transaction history and removes obvious duplicate rows.
-
-Expected columns can include names like:
-
-- `date`
-- `transaction date`
-- `posting date`
-- `value date`
-- `description`
-- `transaction description`
-- `merchant`
-- `amount`
-- `debit amount`
-- `credit amount`
-- `withdrawal amount`
-- `deposit amount`
-- `balance`
-
-The parser is designed to handle mixed bank formats, malformed date-like values, and separate debit/credit columns.
-
-## Dashboard
-
-The Dashboard shows:
-
-- transaction count
-- total spend
-- income
-- top category
-- spending by category
-- monthly spending chart
-- all transactions table
-- month-wise filtering
-- transaction chooser
-- explanation for the selected transaction
-
-Use the **Statement month** selector to switch between:
-
-- `All months`
-- each detected month, such as `2026-04`, `2026-05`
-
-## Guardian Intelligence Report
-
-After upload, the Dashboard shows a **Guardian Intelligence Report**.
-
-It includes:
-
-- Guardian Score out of 100
-- rating label, such as `Strong`, `Good`, `Watch`, or `Needs attention`
-- positive factors
-- key risk factors
-- unusual transactions table
-- behavioral spending insights
-- recommended actions
-
-The score is explainable and rule-based. It considers:
-
-- savings rate
-- spending compared with income
-- flexible spending categories
-- recurring expenses
-- unusual high-value transactions
-
-## Ask Guardian Chat
-
-The chat answers from the uploaded statement data.
-
-Example questions:
-
-```text
-where do i spend money most
-what is my total spend
-what income did i get
-what should i do to save money
-monthly breakdown
-which month had highest spending
-show transactions in May
-list April statement
-how much did I spend in April
-what subscriptions repeat monthly
-```
-
-Month-aware examples:
-
-```text
-where do i spend most in April
-what is my total spend in May
-what should i do to save money in April
-show transactions in latest month
-what did I spend last month
-```
-
-Supported month phrases include:
-
-- full month names, such as `April`
-- short month names, such as `Apr`
-- `YYYY-MM`
-- `YYYY/MM`
-- `last month`
-- `previous month`
-- `latest month`
-- `most recent month`
-
-## Teaching Ask Guardian
-
-You can teach small corrections in chat using `remember`.
-
-Examples:
-
-```text
-remember apartment rent is rent
-remember exclude side project income from normal salary
-remember PayNow to Tan Wei is shared rent, not spending
-```
-
-Use **Clear learned memory** in the sidebar to reset it.
-
-## Transaction Explanation
-
-In the Dashboard:
-
-1. Open the transaction table.
-2. Tick one row in the **Choose** column.
-3. Read the **Explain this transaction** section.
-
-The explanation includes:
-
-- transaction type
-- amount
-- date
-- category
-- statement description
-- share of total spending
-- share of monthly spending
-- share of category spending
-- rank among expenses
-
-## Scam And Finance Checks
-
-Ask Guardian includes two safety tools:
-
-- **Message Check**
-- **Finance Service Check**
-
-These tools check for signals like:
-
-- OTP or banking credential requests
-- urgent threats
-- suspicious links
-- payment pressure
-- unrealistic investment returns
-- missing identity or licensing details
-
-These checks are risk assessments, not proof that a message or service is legitimate. Always verify finance services using the relevant official regulator register.
-
-## Model Configuration
-
-Ask Guardian works even if a model is unavailable because many answers are calculated directly from the dataframe.
-
-Optional Ollama setup:
+Optional configuration:
 
 ```bash
 export GEMMA_PROVIDER=ollama
 export GEMMA_MODEL=gemma3:4b
+export OLLAMA_URL=http://localhost:11434/api/generate
+export STATEMENT_CURRENCY=SGD
+export STATEMENT_CURRENCY_SYMBOL=S$
 ```
 
-Optional Hugging Face Transformers setup:
+---
 
-```bash
-export GEMMA_PROVIDER=transformers
-export GEMMA_MODEL=google/gemma-3-4b-it
-```
+# Example Questions
 
-## Currency Configuration
+## Financial Questions
 
-Default display:
+* “What category do I spend the most on?”
+* “Show my recurring expenses.”
+* “Which month had the highest spending?”
+* “Explain this transaction.”
 
-```text
-SGD / S$
-```
+## Safety Questions
 
-Override it with:
+* “Does this SMS look suspicious?”
+* “Is this investment offer risky?”
+* “Does this finance service look legitimate?”
 
-```bash
-export STATEMENT_CURRENCY=USD
-export STATEMENT_CURRENCY_SYMBOL=$
-```
+---
 
-## Project Files
+# Key Safety Design Choices
 
-```text
-app.py                         Main Streamlit app
-requirements.txt               Python dependencies
-README.md                      Project guide
-sample_singapore_bank_statement.csv
-guardian_chroma/               Local ChromaDB persistence
-```
+## Grounded Responses
 
-## Demo Flow
+The assistant only answers using uploaded statement evidence.
 
-For a hackathon demo:
+## Conservative Scam Analysis
 
-1. Start the app.
-2. Upload multiple monthly statements.
-3. Show the Dashboard month selector.
-4. Show the Guardian Intelligence Report.
-5. Select a transaction and explain it.
-6. Ask: `which month had highest spending`
-7. Ask: `where do i spend most in April`
-8. Ask: `what should i do to save money`
-9. Teach: `remember apartment rent is rent`
-10. Ask the same question again to show personalization.
+The app never guarantees legitimacy.
 
-## Notes
+Instead, it:
 
-- The app does not provide financial advice.
-- It gives data-driven insights from uploaded statements.
-- It may categorize some merchants imperfectly.
-- You can improve categories by teaching corrections in chat.
-- Always review uploaded data and important financial decisions manually.
-# gemma-4-Ask_guardian
+* Flags suspicious behavior
+* Encourages independent verification
+* Advises against sharing sensitive information
+
+## Local AI
+
+Gemma runs locally through Ollama for:
+
+* Privacy
+* Offline usage
+* Safer financial analysis
+
+---
+
+# Challenges Solved
+
+## Messy Bank Statements
+
+Different banks use different formats.
+
+The app handles:
+
+* Multiple encodings
+* Different separators
+* Debit/credit variations
+* Missing column names
+* Malformed dates
+
+---
+
+## Trustworthy AI Responses
+
+Instead of allowing hallucinated answers:
+
+* Relevant rows are retrieved first
+* Prompting is tightly constrained
+* Responses remain evidence-based
+
+---
+
+# Impact
+
+Ask Guardian helps users:
+
+* Understand their finances
+* Detect unusual transactions
+* Build financial awareness
+* Identify scam risks
+* Improve spending habits
+
+This is especially useful for:
+
+* Students
+* Elderly users
+* Young professionals
+* First-time banking users
+* Scam-vulnerable users
+
+---
+
+# Hackathon Alignment
+
+## Safety & Trust
+
+Ask Guardian focuses on:
+
+* Explainable AI
+* Financial safety
+* Scam awareness
+* Grounded reasoning
+
+## Ollama Track
+
+The project uses:
+
+* Local Gemma inference
+* Ollama integration
+* Offline AI workflows
+
+---
+
+# Conclusion
+
+Ask Guardian demonstrates how local AI can improve financial safety and trust.
+
+By combining:
+
+* Transaction intelligence
+* Retrieval-grounded reasoning
+* Scam signal detection
+* Explainable AI responses
+
+the project turns Gemma into a practical financial safety companion for everyday users.
